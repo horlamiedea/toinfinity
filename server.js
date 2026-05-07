@@ -1,6 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const nodemailer = require("nodemailer");
 const path = require("path");
+
+if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  console.warn("WARNING: SMTP_HOST/PORT/USER/PASS not set — RSVP emails will fail.");
+}
 
 const app = express();
 const PORT = process.env.PORT || 4174;
