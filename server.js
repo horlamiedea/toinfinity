@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 4173;
+const PORT = process.env.PORT || 4174;
 
 const RSVP_RECIPIENTS = (process.env.RSVP_RECIPIENTS || "somtochukwu.okoma@ethnoscyber.com")
   .split(",")
