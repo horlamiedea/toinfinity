@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/olamideajayi/Developers/**)",
+      "Bash(git -C /Users/olamideajayi/Developers/wedding remote -v)",
+      "Bash(awk 'END{print NR}' /Users/olamideajayi/Developers/toinfinity/index.html)",
+      "Bash(grep -oE '>[A-Z][^<]{2,200}<' /Users/olamideajayi/Developers/toinfinity/index.html)",
+      "Bash(grep -oE '>[A-Za-z0-9][^<>]{2,500}<' /Users/olamideajayi/Developers/toinfinity/index.html)",
+      "Bash(grep -oE '\"[^\"]{20,300}\"' /Users/olamideajayi/Developers/toinfinity/index.html)",
+      "Bash(grep -oE '.{0,200}12:00 PM.{0,400}' /Users/olamideajayi/Developers/toinfinity/index.html)",
+      "Bash(mkdir -p /tmp/wedding-resize)",
+      "Bash(rm -rf /tmp/wedding-resize/*)"
+    ]
+  }
+}

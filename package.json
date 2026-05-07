@@ -1,0 +1,14 @@
+{
+  "name": "dp-wedding",
+  "private": true,
+  "scripts": {
+    "start": "node -r dotenv/config server.js",
+    "dev": "node -r dotenv/config server.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "nodemailer": "^8.0.5"
+  }
+}
