@@ -14,6 +14,12 @@ const RSVP_RECIPIENTS = (process.env.RSVP_RECIPIENTS || "horlamiedea@gmail.com,j
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
+const CONTRIBUTION_RECIPIENTS = (
+  process.env.CONTRIBUTION_RECIPIENTS || "horlamiedea@gmail.com,jesutominiabikoye@gmail.com"
+)
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const SMTP_PORT = Number(process.env.SMTP_PORT);
 const transporter = nodemailer.createTransport({
@@ -26,7 +32,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const FROM_HOST = `"Toinfinity Wedding" <${process.env.SMTP_USER}>`;
+const FROM_HOST = `"TOinfinity Wedding" <${process.env.SMTP_USER}>`;
 const FROM_COUPLE = `"Tomini & Olamide" <${process.env.SMTP_USER}>`;
 
 app.use(express.json());
@@ -148,6 +154,60 @@ app.post("/api/rsvp", async (req, res) => {
     return res.json({
       success: false,
       message: "Something went wrong. Please try again.",
+    });
+  }
+});
+
+app.post("/api/contribution", async (req, res) => {
+  try {
+    const { itemId, itemName, guestName, message } = req.body || {};
+    const cleanName = String(guestName || "").trim();
+    const cleanItem = String(itemName || "").trim() || String(itemId || "").trim() || "Registry contribution";
+    const cleanMessage = String(message || "").trim();
+
+    if (!cleanName || cleanName.length < 2) {
+      return res.json({ success: false, message: "Please enter your name." });
+    }
+    if (cleanMessage.length > 500) {
+      return res.json({ success: false, message: "Message must be 500 characters or fewer." });
+    }
+
+    await transporter.sendMail({
+      from: FROM_HOST,
+      to: CONTRIBUTION_RECIPIENTS,
+      subject: `Registry note from ${cleanName} — ${cleanItem}`,
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px; background: #faf9f6; border: 1px solid #e8e0d0;">
+          <h2 style="color: #2c2c2c; font-weight: 300; border-bottom: 1px solid #d4af37; padding-bottom: 12px;">
+            New Registry Note
+          </h2>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+              <td style="padding: 10px 0; color: #999; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Guest Name</td>
+              <td style="padding: 10px 0; color: #2c2c2c; font-size: 16px;">${cleanName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #999; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Registry Item</td>
+              <td style="padding: 10px 0; color: #2c2c2c; font-size: 16px;">${cleanItem}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #999; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Message</td>
+              <td style="padding: 10px 0; color: #2c2c2c; font-size: 16px;">${cleanMessage || "No message left."}</td>
+            </tr>
+          </table>
+          <p style="margin-top: 24px; color: #aaa; font-size: 12px; font-style: italic;">
+            #toinfinity — June 6, 2026
+          </p>
+        </div>
+      `,
+    });
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("Contribution error:", error.message);
+    return res.json({
+      success: false,
+      message: "Could not save your note. Please try again.",
     });
   }
 });
